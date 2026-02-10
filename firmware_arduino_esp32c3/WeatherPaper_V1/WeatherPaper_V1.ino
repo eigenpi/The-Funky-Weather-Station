@@ -184,12 +184,12 @@ void setup()
   SPI.end();
   SPI.begin(EPD_CLK, -1, EPD_DIN, EPD_CS); 
   display.init(9600, true, 50, false); // 115200, true, 50, false
-	display.setRotation(3);
+  display.setRotation(3);
 
   // (2) init serial to local PC; will print debug/status info 
   // to serial terminal;
-	Serial.begin(9600);
-	Serial.println("Initialising...");
+  Serial.begin(9600);
+  Serial.println("Initialising...");
 
   // (3) check battery level;
   pinMode(ledPin, OUTPUT); // LED pin 10;
@@ -211,26 +211,26 @@ void setup()
   }
 
   // (4) attempt to connect to WiFi network;
-	Serial.print("Connecting to WiFi...");
-	WiFi.begin(ssid, password);
+  Serial.print("Connecting to WiFi...");
+  WiFi.begin(ssid, password);
 
   // try to connect up to 8 times; if unsuccessful, tell user that display
   // will not be updated;
-	while ( WiFi.status() != WL_CONNECTED) {
-		delay(1000);
-		Serial.print(".");
-		wifi_timeout++;
-		if (wifi_timeout > 8) {
-			WiFi.disconnect();
-			Serial.println("WiFi not connected! Display will not be updated!");
-			break;
-		}
-	}
+  while ( WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+    wifi_timeout++;
+    if (wifi_timeout > 8) {
+      WiFi.disconnect();
+      Serial.println("WiFi not connected! Display will not be updated!");
+      break;
+    }
+  }
 
   // (5) if connected to wifi, then, pull weather data from the Internet from openweathermap.org
-	if ( WiFi.status() == WL_CONNECTED) {
+  if ( WiFi.status() == WL_CONNECTED) {
     connection_to_wifi_ok = true;
-		Serial.println("WiFi connected successfully! Checking weather now.");
+    Serial.println("WiFi connected successfully! Checking weather now.");
     
     // (a) -------------------------------------------- retrieve weather data
     get_weather();
@@ -238,38 +238,38 @@ void setup()
     // (b) -------------------------------------------- retrieve time and date data
     init_and_set_time_zone("CST6CDT,M3.2.0,M11.1.0");
     get_date_and_time();
-	} 
+  } 
   // if connection to WiFi was not successful, then, display previously saved data, if any;
   else { 
-		if (savedTemp == 0 && savedHumid == 0) { 
+    if (savedTemp == 0 && savedHumid == 0) { 
       // first time we have nothing saved;
-			temperature = "N/A";
-			humidity = "N/A";
-			icon = epd_bitmap_clear_sky;
-			Serial.println("No saved data. Display will not update.");
-		} else { 
+      temperature = "N/A";
+      humidity = "N/A";
+      icon = epd_bitmap_clear_sky;
+      Serial.println("No saved data. Display will not update.");
+    } else { 
       // after a previous successful connection, we have saved temp and hum values;
       // so, just re-print those old values;
-			String temperaturerecovery = String(savedTemp, 1) + "`F"; // use '`' because '°' is not supported in Adafruit_GFX library; 
-			String humidityrecovery = String(savedHumid) + "%";
-			temperature = temperaturerecovery;
-			humidity = humidityrecovery;
-			Serial.println("Data recovered from last refresh.");
-		}
-	}
+      String temperaturerecovery = String(savedTemp, 1) + "`F"; // use '`' because '°' is not supported in Adafruit_GFX library; 
+      String humidityrecovery = String(savedHumid) + "%";
+      temperature = temperaturerecovery;
+      humidity = humidityrecovery;
+      Serial.println("Data recovered from last refresh.");
+    }
+  }
   // NOTE: 
   // at this time, we should have temperature, humidity, and icon updated with new "values";
   // also, time and date data;
 
   // (6) update e-paper display;
-	display.clearScreen();
-	display.fillScreen(GxEPD_WHITE);
+  display.clearScreen();
+  display.fillScreen(GxEPD_WHITE);
   display.setTextColor(GxEPD_BLACK);
   display.setTextSize(1);
 
-	if (connection_to_wifi_ok == false) {
-		display.drawBitmap(4, 3, epd_bitmap_warning, 16, 16, 0);
-	}
+  if (connection_to_wifi_ok == false) {
+    display.drawBitmap(4, 3, epd_bitmap_warning, 16, 16, 0);
+  }
   // personalized title on top of display;
   display.setFont(&FreeSans9pt7b);
   display.setCursor(48, 13);
@@ -288,27 +288,27 @@ void setup()
   // temp/hum icons + values on right are on the right side;
   display.drawLine(0, 20, 295, 20, 0); // horiz line 1;
   display.drawLine(0, 107, 295, 107, 0); // horiz line 2;
-	display.drawLine(104, 21, 104, 106, 0); // vertical line;
-	display.drawBitmap(124, 23, epd_bitmap_temperature, 32, 32, 0);
-	display.drawBitmap(123, 73, epd_bitmap_humidity, 32, 32, 0);
+  display.drawLine(104, 21, 104, 106, 0); // vertical line;
+  display.drawBitmap(124, 23, epd_bitmap_temperature, 32, 32, 0);
+  display.drawBitmap(123, 73, epd_bitmap_humidity, 32, 32, 0);
   // update temp and hum values with a larger font size;
   display.setFont(&FreeSans18pt7b);
   display.setCursor(169, 51);
   display.print(temperature); // update temp;
-	display.setCursor(169, 102);
+  display.setCursor(169, 102);
   display.print(humidity); // update hum;
   // updated weather icon;
-	display.drawBitmap(18, 32, icon, 64, 64, 0); 
+  display.drawBitmap(18, 32, icon, 64, 64, 0); 
   
   // update e-paper display with new information;
-	display.display();
+  display.display();
 
   // (7) go to sleep; will wake up in 30 minutes;
   Serial.println("E-Paper updated! Going to deep sleep mode now.");
   display.powerOff();
   //display.hibernate();  
   delay(500);
-	esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
   esp_deep_sleep_start();
 }
 
@@ -320,7 +320,7 @@ void setup()
 
 void loop() 
 {
-	// nothing done here;
+  // nothing done here;
   // things will be refreshed on startup only; 
 }
 
