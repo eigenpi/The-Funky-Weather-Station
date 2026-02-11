@@ -7,3 +7,5 @@ This is a weather-station device built with an ESP32-C3 board and a Waveshare 2.
 ![photo1 overall design](images/photo1.jpg)
 
 ## Video description
+
+https://youtu.be/MDfy2SWch-s 
